@@ -1,3 +1,6 @@
 [submodule "mmdetection"]
 	path = mmdetection
 	url = https://github.com/open-mmlab/mmdetection.git
+[submodule "snow_leopard_thesis"]
+	path = snow_leopard_thesis
+	url = https://github.com/Mirotivo/snow_leopard_thesis.git
