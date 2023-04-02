@@ -5,11 +5,11 @@ import torch
 import random
 from diffusers import StableDiffusionPipeline, DPMSolverMultistepScheduler
 
-dataset_images_count = 100
+dataset_images_count = 200
 
 
 # define paths
-data_dir = 'synthetic_snow_leopard'
+data_dir = 'synthetic_snow_leopard_200'
 images_dir = os.path.join(data_dir, 'images')
 annotations_dir = os.path.join(data_dir, 'annotations')
 
@@ -30,18 +30,18 @@ pipe = pipe.to("cuda:0")
 
 
 # Define the possible values for each parameter
-poses = ['standing', 'walking', 'running', 'lying down']
-backgrounds = ['snowy mountains', 'rocky terrain', 'grassy meadows']
+poses = ['standing', 'walking', 'running', 'lying down', 'crouching']
+backgrounds = ['snowy mountains', 'rocky terrain', 'grassy meadows', 'zoo']
 interactions = ['hunting prey', 'playing with other snow leopards', 'interacting with environment']
-weather_conditions = ['snowstorm', 'rain', 'fog']
+weather_conditions = ['snowstorm', 'rain', 'fog', 'sunny']
 camera_parameters = ['low aperture', 'fast shutter speed', 'short focal length']
 occlusions = ['tree', 'rock', 'other objects']
-camera_viewpoints = ['front view', 'side view', 'top view']
+camera_viewpoints = ['front view', 'side view', 'top view', 'back view', 'camera trap']
 snow_depths = ['deep', 'shallow', 'none']
 wind_speeds = ['strong', 'moderate', 'weak']
-temperatures = ['cold', 'very cold', 'extremely cold']
+temperatures = ['cold', 'very cold', 'extremely cold', 'warm']
 altitudes = ['high', 'low']
-sun_positions = ['morning', 'midday', 'afternoon']
+sun_positions = ['morning', 'midday', 'afternoon', 'night']
 moon_phases = ['full moon', 'half moon', 'new moon']
 animal_presences = ['none', 'other snow leopards', 'prey animals']
 distances = ['close', 'far']
