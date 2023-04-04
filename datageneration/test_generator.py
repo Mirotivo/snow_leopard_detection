@@ -10,9 +10,9 @@ observations = [
 ]
 
 # define paths
-data_dir = 'inaturalist'
-images_dir = os.path.join(data_dir, 'images')
-annotations_dir = os.path.join(data_dir, 'annotations')
+data_dir = 'inaturalist_VOC2012'
+images_dir = os.path.join(data_dir, 'JPEGImages')
+annotations_dir = os.path.join(data_dir, 'Annotations')
 
 # create required folders if they don't exist
 if not os.path.exists(data_dir):
