@@ -9,9 +9,10 @@ dataset_images_count = 200
 
 
 # define paths
-data_dir = 'synthetic_snow_leopard_200'
-images_dir = os.path.join(data_dir, 'images')
-annotations_dir = os.path.join(data_dir, 'annotations')
+data_dir = 'synthetic_snow_leopard_VOC2012'
+dataset_name = 'dataset_v200.csv'
+images_dir = os.path.join(data_dir, 'JPEGImages')
+annotations_dir = os.path.join(data_dir, 'Annotations')
 
 # set random seeds for reproducibility
 seed = 123
@@ -20,11 +21,13 @@ torch.manual_seed(seed)
 torch.cuda.manual_seed(seed)
 torch.backends.cudnn.deterministic = True
 torch.backends.cudnn.benchmark = False
+# Generate a list of unique numbers between 0 and 10000
+unique_numbers = random.sample(range(10001), 10001)
 
 
 # Use the DPMSolverMultistepScheduler (DPM-Solver++) scheduler here instead
 model_id = "stabilityai/stable-diffusion-2-1"
-pipe = StableDiffusionPipeline.from_pretrained(model_id, torch_dtype=torch.float16)
+pipe = StableDiffusionPipeline.from_pretrained(model_id, torch_dtype=torch.float16, output_dir='datageneration')
 pipe.scheduler = DPMSolverMultistepScheduler.from_config(pipe.scheduler.config)
 pipe = pipe.to("cuda:0")
 
@@ -55,7 +58,7 @@ if not os.path.exists(annotations_dir):
 if not os.path.exists(images_dir):
     os.mkdir(images_dir)
 
-with open(os.path.join(annotations_dir, 'dataset.csv'), 'w', newline='') as csvfile:
+with open(os.path.join(annotations_dir, dataset_name), 'w', newline='') as csvfile:
     fieldnames = ['prompt', 'file_name']
     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
     writer.writeheader()
@@ -80,12 +83,16 @@ with open(os.path.join(annotations_dir, 'dataset.csv'), 'w', newline='') as csvf
         distance = random.choice(distances)
         behavior = random.choice(behaviors)
 
-        prompt = f"A snow leopard is {pose} in a {background} environment, {interaction}. The weather is {weather_condition} and the temperature is {temperature}. The camera has {camera_parameter} and is positioned at a {camera_viewpoint}. The snow leopard is partially obscured by a {occlusion}, and the camera is capturing the scene from {distance} distance. The snow depth is {snow_depth} and the wind is {wind_speed}. The altitude is {altitude} and the sun is in the {sun_position}. The moon is in the {moon_phase}. There are {animal_presence} nearby. The snow leopard is {behavior}."
+        # prompt = f"A snow leopard is {pose} in a {background} environment, {interaction}. The weather is {weather_condition} and the temperature is {temperature}. The camera has {camera_parameter} and is positioned at a {camera_viewpoint}. The snow leopard is partially obscured by a {occlusion}, and the camera is capturing the scene from {distance} distance. The snow depth is {snow_depth} and the wind is {wind_speed}. The altitude is {altitude} and the sun is in the {sun_position}. The moon is in the {moon_phase}. There are {animal_presence} nearby. The snow leopard is {behavior}."
+        prompt = f"{pose} snow leopard in {background}, {interaction}. Weather: {weather_condition}, {temperature}. Camera: {camera_parameter}, {camera_viewpoint}. Partially obscured by {occlusion} at {distance}. {snow_depth} snow, {wind_speed} wind. Altitude: {altitude}. Sun: {sun_position}, Moon: {moon_phase}. Nearby: {animal_presence}. {behavior}."
         image = pipe(prompt).images[0]
 
         # save image with random number in the file name
-        file_name = f"snow_leopard_{random.randint(0, 10000)}.png"
-        image.save(os.path.join(images_dir, file_name))
+        # file_name = f"snow_leopard_{unique_numbers[i]}.png"
+        # image.save(os.path.join(images_dir, file_name))
+        file_name = f"synthetic_snow_leopard_v200_{unique_numbers[i]}.jpg"
+        image = image.convert('RGB')  # convert from RGBA to RGB
+        image.save(os.path.join(images_dir, file_name), format='JPEG', quality=100)
 
         writer.writerow({'prompt': prompt, 'file_name': file_name})
         print(f"Saved image {file_name}")
