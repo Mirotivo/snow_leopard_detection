@@ -70,7 +70,6 @@ log_files = {
 }
 epoch, ap50 = read_log_files(log_files)
 plot_epoch_ap50(epoch, ap50, 'Fine-tuning RetinaNet')
-
 # %%
 log_files = {
     'lr0.01 bs24': 'leopard_HybridTaskCascade_ResNet50_SGD_ep10_lr_0.01_step200_250',
@@ -85,7 +84,6 @@ log_files = {
 }
 epoch, ap50 = read_log_files(log_files)
 plot_epoch_ap50(epoch, ap50, 'Fine-tuning HybridTaskCascade on v100')
-
 # %%
 log_files = {
     'lr0.01 bs24': 'leopard_v300_HybridTaskCascade_ResNet50_SGD_ep10_lr_0.01_step200_250',
@@ -100,6 +98,8 @@ log_files = {
 }
 epoch, ap50 = read_log_files(log_files)
 plot_epoch_ap50(epoch, ap50, 'Fine-tuning HybridTaskCascade on v300')
+
+
 
 # %%
 import glob
@@ -132,4 +132,48 @@ for img_name in img_names:
     result = inference_detector(model, img)
     show_result_pyplot(model, img, result, score_thr=0.5)
 
+
+
+
+
+# %%
+import os
+import random
+import numpy as np
+import matplotlib.pylab as plt
+from PIL import Image
+
+# Fix the seed for the random number generator
+seed_value = 100
+random.seed(seed_value)
+np.random.seed(seed_value)
+
+# Set the path to the directory containing the images
+path = "/home/abadr/master/mmdetection/data/synthetic_snow_leopard_VOC2012/JPEGImages"
+
+# Get a list of all image filenames in the directory, excluding v2 images
+# image_files = [f for f in os.listdir(path) if f.endswith('.jpg') and f.startswith('synthetic_snow_leopard_') and 'v2' not in f]
+image_files = [f for f in os.listdir(path) if f.endswith('.jpg') and f.startswith('synthetic_snow_leopard_v200')]
+
+# Load and display 6 random images that follow the specified pattern
+num_images = 6
+selected_files = random.sample(image_files, num_images)
+
+# Load and display the selected images
+fig, axs = plt.subplots(2, 3, figsize=(8, 6))
+axs = axs.flatten()
+for i, filename in enumerate(selected_files):
+    # Get the random number from the filename
+    random_number = filename.split('_')[-1].split('.')[0]
+
+    # Load the image using PIL
+    img = Image.open(os.path.join(path, filename))
+
+    # Display the image in the subplot
+    axs[i].imshow(img)
+    axs[i].set_title(f'Image {random_number}')
+    axs[i].axis('off')
+base_path = '/home/abadr/master/snow_leopard_thesis/figures'
+plt.savefig(os.path.join(base_path, 'synthetic_snow_leopard_v2_samples.png'), dpi=300, bbox_inches='tight')  # save plot to file
+plt.show()
 # %%
