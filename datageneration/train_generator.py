@@ -10,7 +10,7 @@ dataset_images_count = 200
 
 # define paths
 data_dir = 'synthetic_snow_leopard_VOC2012'
-dataset_name = 'dataset_v200.csv'
+dataset_name = 'dataset_v500.csv'
 images_dir = os.path.join(data_dir, 'JPEGImages')
 annotations_dir = os.path.join(data_dir, 'Annotations')
 
@@ -26,7 +26,7 @@ unique_numbers = random.sample(range(10001), 10001)
 
 
 # Use the DPMSolverMultistepScheduler (DPM-Solver++) scheduler here instead
-model_id = "stabilityai/stable-diffusion-2-1"
+model_id = "stablediffusionapi/edge-of-realism"
 pipe = StableDiffusionPipeline.from_pretrained(model_id, torch_dtype=torch.float16, output_dir='datageneration')
 pipe.scheduler = DPMSolverMultistepScheduler.from_config(pipe.scheduler.config)
 pipe = pipe.to("cuda:0")
@@ -37,7 +37,7 @@ poses = ['standing', 'walking', 'running', 'lying down', 'crouching']
 backgrounds = ['snowy mountains', 'rocky terrain', 'grassy meadows', 'zoo']
 interactions = ['hunting prey', 'playing with other snow leopards', 'interacting with environment']
 weather_conditions = ['snowstorm', 'rain', 'fog', 'sunny']
-camera_parameters = ['low aperture', 'fast shutter speed', 'short focal length']
+camera_parameters = ['long focal length']
 occlusions = ['tree', 'rock', 'other objects']
 camera_viewpoints = ['front view', 'side view', 'top view', 'back view', 'camera trap']
 snow_depths = ['deep', 'shallow', 'none']
@@ -47,7 +47,7 @@ altitudes = ['high', 'low']
 sun_positions = ['morning', 'midday', 'afternoon', 'night']
 moon_phases = ['full moon', 'half moon', 'new moon']
 animal_presences = ['none', 'other snow leopards', 'prey animals']
-distances = ['close', 'far']
+distances = ['very far']
 behaviors = ['marking territory', 'vocalizing', 'grooming']
 
 # create required folders if they don't exist
@@ -85,12 +85,13 @@ with open(os.path.join(annotations_dir, dataset_name), 'w', newline='') as csvfi
 
         # prompt = f"A snow leopard is {pose} in a {background} environment, {interaction}. The weather is {weather_condition} and the temperature is {temperature}. The camera has {camera_parameter} and is positioned at a {camera_viewpoint}. The snow leopard is partially obscured by a {occlusion}, and the camera is capturing the scene from {distance} distance. The snow depth is {snow_depth} and the wind is {wind_speed}. The altitude is {altitude} and the sun is in the {sun_position}. The moon is in the {moon_phase}. There are {animal_presence} nearby. The snow leopard is {behavior}."
         prompt = f"{pose} snow leopard in {background}, {interaction}. Weather: {weather_condition}, {temperature}. Camera: {camera_parameter}, {camera_viewpoint}. Partially obscured by {occlusion} at {distance}. {snow_depth} snow, {wind_speed} wind. Altitude: {altitude}. Sun: {sun_position}, Moon: {moon_phase}. Nearby: {animal_presence}. {behavior}."
+        prompt = f"In {background}, the snow leopard is {interaction} while {weather_condition} and {temperature}. The camera is {camera_viewpoint} with {camera_parameter} setting. {distance} away, the snow leopard is partially obscured by {occlusion}. There is {snow_depth} snow and {wind_speed} wind in the {altitude} altitude. {sun_position} sun and {moon_phase} moon are in the sky. {behavior} nearby, including {animal_presence}. The snow leopard's {pose} creates a striking image of it appearing very far away."
         image = pipe(prompt).images[0]
 
         # save image with random number in the file name
         # file_name = f"snow_leopard_{unique_numbers[i]}.png"
         # image.save(os.path.join(images_dir, file_name))
-        file_name = f"synthetic_snow_leopard_v200_{unique_numbers[i]}.jpg"
+        file_name = f"synthetic_snow_leopard_v500_{unique_numbers[i]}.jpg"
         image = image.convert('RGB')  # convert from RGBA to RGB
         image.save(os.path.join(images_dir, file_name), format='JPEG', quality=100)
 
