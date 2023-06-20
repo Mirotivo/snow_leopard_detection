@@ -6,7 +6,8 @@ import urllib.request
 
 # open the CSV file containing the image URLs
 observations = [
-    ('snow_leopard', '305347')
+    # ('snow_leopard', '305347'),
+    ('tiger', '305361')
 ]
 
 # define paths
